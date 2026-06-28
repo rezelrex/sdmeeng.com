@@ -305,10 +305,12 @@
         src="assets/hero.jpg"
         alt=""
         aria-hidden="true"
-        class="w-full h-full object-cover opacity-30"
+        class="w-full h-full object-cover opacity-70"
         loading="eager"
       />
-      <div class="absolute inset-0 bg-gradient-to-b from-ink via-ink/80 to-ink"></div>
+      <div class="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/40 to-ink"></div>
+      <!-- Soft centre scrim to keep the headline readable over the brighter image -->
+      <div class="absolute inset-0" style="background: radial-gradient(ellipse at center, rgba(10,10,10,0.55) 0%, rgba(10,10,10,0.25) 45%, transparent 75%);"></div>
     </div>
 
     <!-- Content (centered in the available space between nav and scroll cue) -->
@@ -326,7 +328,7 @@
 
       <p class="font-body text-cream-muted font-light leading-relaxed max-w-2xl mx-auto mb-10 reveal reveal-delay-2"
          style="font-size: clamp(0.9rem, 1.8vw, 1.1rem);">
-        With a smart lighting system and bespoke architectural carpentry — every room becomes multi-functional, optimised, and convenient at your fingertip.
+        With a smart lighting system and bespoke architectural carpentry, every room becomes multi-functional, optimised, and convenient at your fingertip.
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-5 reveal reveal-delay-3">
@@ -783,7 +785,7 @@
           Let's Build<br />Something Considered.
         </h2>
         <p class="font-body text-cream-muted font-light text-sm leading-loose mb-10">
-          Every SDME project starts with a conversation. Tell us about your space, your vision, and your timeline — we'll come back with an approach tailored specifically to you.
+          Every SDME project starts with a conversation. Tell us about your space, your vision, and your timeline, we'll come back with an approach tailored specifically to you.
         </p>
 
         <div class="space-y-6">
@@ -830,7 +832,7 @@
             <i data-lucide="linkedin" class="w-4 h-4 text-cream-muted hover:text-gold transition-colors"></i>
           </a>
         </div> -->
-    </div> 
+      </div>
 
       <!-- Right: Form -->
       <div class="reveal reveal-delay-2">
@@ -963,6 +965,27 @@
       </div>
     </div>
   </footer>
+
+
+  <!-- ════════════════════════════════════
+       STICKY WHATSAPP BUTTON
+  ════════════════════════════════════ -->
+  <a
+    href="https://wa.me/6580447400?text=Hi%20SDME%20Engineering%2C%20I'd%20like%20to%20enquire%20about%20your%20services."
+    target="_blank"
+    rel="noopener"
+    aria-label="Message us on WhatsApp"
+    class="group fixed bottom-6 right-6 z-50 flex items-center gap-3 pl-5 pr-2 py-2 rounded-full shadow-xl transition-transform duration-300 hover:scale-105"
+    style="background:#25D366;"
+  >
+    <span class="font-body text-white font-semibold text-sm uppercase tracking-wide whitespace-nowrap">Chat with us</span>
+    <span class="relative flex items-center justify-center w-12 h-12 rounded-full" style="background:#1ebe5a;">
+    <span class="absolute inline-flex w-full h-full rounded-full opacity-60 animate-ping" style="background:#25D366;"></span>
+    <svg class="relative w-7 h-7" viewBox="0 0 32 32" fill="#ffffff" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M16.004 0h-.008C7.174 0 .002 7.174.002 16c0 3.49 1.124 6.72 3.034 9.34L1.05 31.43l6.29-2.01A15.9 15.9 0 0 0 16.004 32C24.83 32 32 24.826 32 16S24.83 0 16.004 0zm9.32 22.594c-.386 1.09-1.92 1.996-3.144 2.26-.836.178-1.93.32-5.61-1.205-4.71-1.952-7.74-6.736-7.976-7.046-.226-.31-1.9-2.53-1.9-4.826 0-2.296 1.198-3.426 1.624-3.896.386-.426.84-.598 1.26-.598.146 0 .288.008.418.014.398.018.598.04.86.668.34.79 1.18 2.73 1.28 2.93.1.2.166.434.034.7-.122.272-.184.44-.366.674-.184.232-.39.518-.556.696-.184.196-.376.41-.162.78.214.37.95 1.566 2.04 2.536 1.404 1.252 2.58 1.64 2.97 1.804.39.166.616.14.84-.084.226-.226.964-1.122 1.222-1.508.256-.386.516-.32.866-.192.354.124 2.246 1.06 2.632 1.252.386.196.642.288.738.448.094.16.094.926-.292 2.016z"/>
+    </svg>
+    </span>
+  </a>
 
 
   <!-- ════════════════════════════════════
