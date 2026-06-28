@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDME Engineering — Ambient Light & Intelligent Carpentry</title>
+  <meta name="description" content="SDME Engineering specialises in centralised LED scene engineering and bespoke architectural carpentry — spaces that think and storage that disappears." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Josefin+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              DEFAULT: '#C9A96E',
+              light: '#E2C99A',
+              dark: '#A07840',
+            },
+            ink: {
+              DEFAULT: '#0A0A0A',
+              soft: '#111111',
+              mid: '#1A1A1A',
+              muted: '#2A2A2A',
+            },
+            cream: {
+              DEFAULT: '#F5F0E8',
+              muted: '#C8C0B0',
+              dim: '#7A7470',
+            },
+          },
+          fontFamily: {
+            display: ['Cinzel', 'serif'],
+            body: ['Josefin Sans', 'sans-serif'],
+          },
+          letterSpacing: {
+            widest2: '0.25em',
+            widest3: '0.4em',
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.8s ease forwards',
+            'fade-in': 'fadeIn 1s ease forwards',
+            'line-grow': 'lineGrow 1.2s ease forwards',
+          },
+          keyframes: {
+            fadeUp: {
+              '0%': { opacity: '0', transform: 'translateY(32px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            lineGrow: {
+              '0%': { width: '0' },
+              '100%': { width: '100%' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { background: #0A0A0A; }
+
+    /* Offset anchored sections so their headings clear the fixed nav */
+    section[id] { scroll-margin-top: 7rem; }
+
+    body {
+      font-family: 'Josefin Sans', sans-serif;
+      background: #0A0A0A;
+      color: #F5F0E8;
+      overflow-x: hidden;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #C9A96E; border-radius: 2px; }
+
+    /* Gold line divider */
+    .gold-line {
+      display: block;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #C9A96E, transparent);
+    }
+
+    /* Glass nav */
+    .glass-nav {
+      background: rgba(10,10,10,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+
+    /* Noise texture overlay */
+    .noise::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.4;
+    }
+
+    /* Hero gradient */
+    .hero-gradient {
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,169,110,0.08) 0%, transparent 70%),
+                  linear-gradient(180deg, #0A0A0A 0%, #111111 100%);
+    }
+
+    /* Section fade-in observer */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s cubic-bezier(0.25,0.46,0.45,0.94),
+                  transform 0.9s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.35s; }
+    .reveal-delay-4 { transition-delay: 0.5s; }
+
+    /* Service card hover */
+    .service-card {
+      border: 1px solid rgba(201,169,110,0.12);
+      transition: border-color 0.35s ease, transform 0.35s ease, box-shadow 0.35s ease;
+      cursor: default;
+    }
+    .service-card:hover {
+      border-color: rgba(201,169,110,0.45);
+      transform: translateY(-4px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.5), 0 0 0 0.5px rgba(201,169,110,0.2);
+    }
+
+    /* Gallery image hover */
+    .gallery-item img {
+      transition: transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.5s ease;
+      filter: brightness(0.75) saturate(0.8);
+    }
+    .gallery-item:hover img {
+      transform: scale(1.04);
+      filter: brightness(0.9) saturate(1);
+    }
+    .gallery-item { overflow: hidden; }
+
+    /* Gold underline on hover */
+    .nav-link {
+      position: relative;
+      color: #C8C0B0;
+      letter-spacing: 0.12em;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      transition: color 0.25s;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #C9A96E;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .nav-link:hover { color: #C9A96E; }
+    .nav-link:hover::after { transform: scaleX(1); }
+
+    /* CTA button */
+    .btn-gold {
+      display: inline-block;
+      padding: 14px 40px;
+      background: transparent;
+      border: 1px solid #C9A96E;
+      color: #C9A96E;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-gold::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #C9A96E;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .btn-gold:hover { color: #0A0A0A; box-shadow: 0 0 40px rgba(201,169,110,0.2); }
+    .btn-gold:hover::before { transform: scaleX(1); }
+    .btn-gold span { position: relative; z-index: 1; }
+
+    /* Stat counter accent */
+    .stat-num {
+      font-family: 'Cinzel', serif;
+      color: #C9A96E;
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    /* Form input */
+    .form-input {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(201,169,110,0.18);
+      color: #F5F0E8;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      padding: 14px 20px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .form-input::placeholder { color: #7A7470; }
+    .form-input:focus {
+      border-color: rgba(201,169,110,0.6);
+      background: rgba(201,169,110,0.03);
+    }
+    .form-input option { background: #111111; }
+
+    /* Mobile menu */
+    #mobile-menu { display: none; }
+    #mobile-menu.open { display: flex; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .service-card, .gallery-item img, .btn-gold::before { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════
+       NAVIGATION
+  ════════════════════════════════════ -->
+  <nav id="navbar" class="glass-nav fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-20 md:h-24">
+
+      <!-- Logo -->
+      <a href="#" class="flex items-center group" aria-label="SDME Engineering home">
+        <img src="assets/SDME.png" alt="SDME Engineering" class="h-14 md:h-16 w-auto invert opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+      </a>
+
+      <!-- Desktop links -->
+      <ul class="hidden md:flex items-center gap-8">
+        <li><a href="#services" class="nav-link">Services</a></li>
+        <li><a href="#about" class="nav-link">Studio</a></li>
+        <li><a href="#gallery" class="nav-link">Portfolio</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+      </ul>
+
+      <!-- CTA + Hamburger -->
+      <div class="flex items-center gap-4">
+        <a href="#contact" class="hidden md:block btn-gold"><span>Enquire</span></a>
+        <button id="hamburger" class="md:hidden p-2 text-cream-muted hover:text-gold transition-colors" aria-label="Open menu" aria-expanded="false">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="flex-col px-6 pb-6 gap-5 bg-ink-soft border-t border-gold/10">
+      <a href="#services" class="nav-link py-2 block">Services</a>
+      <a href="#about" class="nav-link py-2 block">Studio</a>
+      <a href="#gallery" class="nav-link py-2 block">Portfolio</a>
+      <a href="#contact" class="nav-link py-2 block">Contact</a>
+      <a href="#contact" class="btn-gold mt-2 text-center"><span>Enquire</span></a>
+    </div>
+  </nav>
+
+
+  <!-- ════════════════════════════════════
+       HERO
+  ════════════════════════════════════ -->
+  <section class="hero-gradient noise relative min-h-screen flex flex-col items-center text-center px-6">
+
+    <!-- Background image -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src="assets/hero.jpg"
+        alt=""
+        aria-hidden="true"
+        class="w-full h-full object-cover opacity-30"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-ink via-ink/80 to-ink"></div>
+    </div>
+
+    <!-- Content (centered in the available space between nav and scroll cue) -->
+    <div class="relative z-10 flex-1 flex flex-col justify-center max-w-5xl mx-auto pt-28 pb-10">
+      <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-8 reveal">
+        Smart Lighting · Intelligent Carpentry · Singapore
+      </p>
+
+      <h1 class="font-display text-cream font-semibold leading-tight mb-8 reveal reveal-delay-1"
+          style="font-size: clamp(2.4rem, 6.5vw, 6rem); letter-spacing: -0.01em;">
+        Transform Your Home Into<br />
+        <span class="text-gold">Modern Style Living.</span>
+      </h1>
+
+      <p class="font-body text-cream-muted font-light leading-relaxed max-w-2xl mx-auto mb-12 reveal reveal-delay-2"
+         style="font-size: clamp(0.9rem, 1.8vw, 1.1rem);">
+        With a smart lighting system and bespoke architectural carpentry — every room becomes multi-functional, optimised, and convenient at your fingertip.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-5 reveal reveal-delay-3">
+        <a href="#contact" class="btn-gold"><span>Commission a Project</span></a>
+        <a href="#services" class="font-body text-cream-muted text-[0.7rem] tracking-widest uppercase hover:text-gold transition-colors flex items-center gap-2 cursor-pointer">
+          Explore Services
+          <i data-lucide="arrow-down" class="w-3 h-3"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator (in normal flow at the foot of the hero) -->
+    <div class="relative z-10 pb-10 flex flex-col items-center gap-2 reveal reveal-delay-4">
+      <span class="font-body text-cream-dim text-[0.6rem] tracking-widest3 uppercase">Scroll</span>
+      <div class="w-px h-10 bg-gradient-to-b from-gold to-transparent"></div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       STATS BAR
+  ════════════════════════════════════ -->
+  <section class="bg-ink-soft border-y border-gold/10 py-16 px-6">
+    <div class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6">
+
+      <div class="text-center reveal">
+        <div class="stat-num mb-2" data-count="120" data-suffix="+">0</div>
+        <p class="font-body text-cream-dim text-[0.65rem] tracking-widest uppercase">Projects Delivered</p>
+      </div>
+
+      <div class="text-center reveal reveal-delay-1">
+        <div class="stat-num mb-2" data-count="12">0</div>
+        <p class="font-body text-cream-dim text-[0.65rem] tracking-widest uppercase">Years in Practice</p>
+      </div>
+
+      <div class="text-center reveal reveal-delay-2">
+        <div class="stat-num mb-2" data-count="98" data-suffix="%">0</div>
+        <p class="font-body text-cream-dim text-[0.65rem] tracking-widest uppercase">Client Satisfaction</p>
+      </div>
+
+      <div class="text-center reveal reveal-delay-3">
+        <div class="stat-num mb-2" data-count="3">0</div>
+        <p class="font-body text-cream-dim text-[0.65rem] tracking-widest uppercase">Design Awards</p>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       SERVICES
+  ════════════════════════════════════ -->
+  <section id="services" class="py-28 px-6">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Header -->
+      <div class="text-center mb-20 reveal">
+        <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-4">What We Do</p>
+        <h2 class="font-display text-cream font-medium mb-6" style="font-size: clamp(2rem, 4.5vw, 3.5rem);">
+          Two Disciplines.<br />One Philosophy.
+        </h2>
+        <span class="gold-line inline-block w-16"></span>
+      </div>
+
+      <!-- Service Cards -->
+      <div class="grid md:grid-cols-2 gap-6 lg:gap-10">
+
+        <!-- Card 1: Smart Lighting -->
+        <div class="service-card bg-ink-soft p-10 lg:p-14 reveal">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="w-10 h-10 border border-gold/30 flex items-center justify-center">
+              <i data-lucide="lightbulb" class="w-5 h-5 text-gold"></i>
+            </div>
+            <span class="font-body text-gold text-[0.6rem] tracking-widest3 uppercase">01 / Smart Lighting</span>
+          </div>
+
+          <h3 class="font-display text-cream text-2xl lg:text-3xl font-medium mb-6 leading-tight">
+            Smart Ambient<br />Lighting Control
+          </h3>
+
+          <p class="font-body text-cream-muted font-light text-sm leading-loose mb-8">
+            Convenient at your fingertip. Centralised LED control lets you set the mood, shift scenes, and automate ambience — all from a single tap. Transform any room into the perfect environment, instantly.
+          </p>
+
+          <ul class="space-y-3 mb-10">
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Centralised LED scene engineering</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Tunable white &amp; circadian control</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Smart home &amp; app integration</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Custom dimming curves &amp; scene presets</span>
+            </li>
+          </ul>
+
+          <div class="overflow-hidden relative h-52">
+            <img
+              src="assets/lighting-walkin.jpg"
+              alt="Walk-in wardrobe with precision track lighting and LED strips by SDME Engineering"
+              class="w-full h-full object-cover opacity-70 hover:opacity-90 hover:scale-105 transition-all duration-700"
+            />
+          </div>
+        </div>
+
+        <!-- Card 2: Carpentry -->
+        <div class="service-card bg-ink-soft p-10 lg:p-14 reveal reveal-delay-2">
+          <div class="flex items-center gap-4 mb-8">
+            <div class="w-10 h-10 border border-gold/30 flex items-center justify-center">
+              <i data-lucide="square" class="w-5 h-5 text-gold"></i>
+            </div>
+            <span class="font-body text-gold text-[0.6rem] tracking-widest3 uppercase">02 / Carpentry</span>
+          </div>
+
+          <h3 class="font-display text-cream text-2xl lg:text-3xl font-medium mb-6 leading-tight">
+            Intelligent<br />Carpentry
+          </h3>
+
+          <p class="font-body text-cream-muted font-light text-sm leading-loose mb-8">
+            Multi-functional and optimised living space. Bespoke storage built into the architecture maximises every square foot — without sacrificing style. Storage that disappears; function that stays.
+          </p>
+
+          <ul class="space-y-3 mb-10">
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Bespoke built-in wardrobes &amp; cabinetry</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Floor-to-ceiling integrated storage</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Hidden mechanism &amp; push-to-open systems</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <i data-lucide="check" class="w-4 h-4 text-gold mt-0.5 shrink-0"></i>
+              <span class="font-body text-cream-muted text-sm font-light">Integrated LED within joinery</span>
+            </li>
+          </ul>
+
+          <div class="overflow-hidden relative h-52">
+            <img
+              src="assets/carpentry-kitchen.jpg"
+              alt="Floor-to-ceiling bespoke kitchen cabinetry by SDME Engineering"
+              class="w-full h-full object-cover object-center opacity-70 hover:opacity-90 hover:scale-105 transition-all duration-700"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-services row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+        <div class="border border-gold/10 p-6 bg-ink-soft hover:border-gold/30 transition-colors cursor-default reveal">
+          <i data-lucide="settings" class="w-5 h-5 text-gold mb-4"></i>
+          <p class="font-display text-cream text-xs mb-1">Consultation</p>
+          <p class="font-body text-cream-dim text-[0.7rem] font-light">Site survey &amp; brief development</p>
+        </div>
+        <div class="border border-gold/10 p-6 bg-ink-soft hover:border-gold/30 transition-colors cursor-default reveal reveal-delay-1">
+          <i data-lucide="layers" class="w-5 h-5 text-gold mb-4"></i>
+          <p class="font-display text-cream text-xs mb-1">Design</p>
+          <p class="font-body text-cream-dim text-[0.7rem] font-light">3D visualisation &amp; specifications</p>
+        </div>
+        <div class="border border-gold/10 p-6 bg-ink-soft hover:border-gold/30 transition-colors cursor-default reveal reveal-delay-2">
+          <i data-lucide="wrench" class="w-5 h-5 text-gold mb-4"></i>
+          <p class="font-display text-cream text-xs mb-1">Installation</p>
+          <p class="font-body text-cream-dim text-[0.7rem] font-light">Precision installation &amp; commissioning</p>
+        </div>
+        <div class="border border-gold/10 p-6 bg-ink-soft hover:border-gold/30 transition-colors cursor-default reveal reveal-delay-3">
+          <i data-lucide="shield-check" class="w-5 h-5 text-gold mb-4"></i>
+          <p class="font-display text-cream text-xs mb-1">Aftercare</p>
+          <p class="font-body text-cream-dim text-[0.7rem] font-light">5-year warranty &amp; support</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       ABOUT / PHILOSOPHY
+  ════════════════════════════════════ -->
+  <section id="about" class="py-28 px-6 bg-ink-soft">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+      <!-- Image -->
+      <div class="relative reveal">
+        <div class="absolute -top-4 -left-4 w-full h-full border border-gold/15 z-0"></div>
+        <img
+          src="assets/carpentry-wardrobe.jpg"
+          alt="SDME Engineering — built-in wardrobe with integrated LED spotlights"
+          class="relative z-10 w-full h-[500px] object-cover"
+          loading="lazy"
+        />
+        <!-- Floating label -->
+        <div class="absolute z-20 bottom-6 right-6 bg-ink/90 border border-gold/20 px-5 py-3 backdrop-blur-sm">
+          <p class="font-display text-gold text-xs">Est. 2012</p>
+          <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest">Singapore</p>
+        </div>
+      </div>
+
+      <!-- Text -->
+      <div class="reveal reveal-delay-2">
+        <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-4">Our Philosophy</p>
+        <h2 class="font-display text-cream font-medium mb-8" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">
+          Modern Living,<br />Intelligently Designed.
+        </h2>
+
+        <p class="font-body text-cream-muted font-light text-sm leading-loose mb-6">
+          We transform homes into modern style living — where smart lighting systems and precision carpentry work together as one seamless experience. Every switch, every surface, every space is considered.
+        </p>
+
+        <p class="font-body text-cream-muted font-light text-sm leading-loose mb-10">
+          From a single HDB room to a landed property, SDME Engineering designs multi-functional, optimised living spaces tailored to how you actually live — convenient at your fingertip, beautiful to the eye.
+        </p>
+
+        <div class="space-y-4 mb-10">
+          <div class="flex items-start gap-4">
+            <span class="gold-line mt-3" style="width:24px; flex-shrink:0;"></span>
+            <p class="font-body text-cream text-sm font-light">Smart lighting scenes tailored to every room and routine.</p>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="gold-line mt-3" style="width:24px; flex-shrink:0;"></span>
+            <p class="font-body text-cream text-sm font-light">Bespoke carpentry that maximises space without compromise.</p>
+          </div>
+          <div class="flex items-start gap-4">
+            <span class="gold-line mt-3" style="width:24px; flex-shrink:0;"></span>
+            <p class="font-body text-cream text-sm font-light">Lighting and joinery always designed together — never in isolation.</p>
+          </div>
+        </div>
+
+        <a href="#contact" class="btn-gold"><span>Start a Conversation</span></a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       GALLERY
+  ════════════════════════════════════ -->
+  <section id="gallery" class="py-28 px-6">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14 reveal">
+        <div>
+          <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-4">Selected Works</p>
+          <h2 class="font-display text-cream font-medium" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">
+            Portfolio
+          </h2>
+        </div>
+        <p class="font-body text-cream-dim text-sm font-light max-w-xs leading-relaxed">
+          Residential &amp; commercial projects across Singapore and the region.
+        </p>
+      </div>
+
+      <!-- Masonry-style grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+
+        <div class="gallery-item col-span-2 md:col-span-1 row-span-2 reveal">
+          <img
+            src="assets/gallery-island.jpg"
+            alt="Kitchen island with chandelier lighting by SDME Engineering"
+            class="w-full h-full min-h-[300px] md:min-h-[500px] object-cover"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="gallery-item reveal reveal-delay-1">
+          <img
+            src="assets/carpentry-wardrobe.jpg"
+            alt="Built-in wardrobe with integrated LED spotlights by SDME Engineering"
+            class="w-full h-60 object-cover"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="gallery-item reveal reveal-delay-2">
+          <img
+            src="assets/gallery-living.jpg"
+            alt="Living room with smart ambient lighting scenes by SDME Engineering"
+            class="w-full h-60 object-cover object-top"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="gallery-item reveal reveal-delay-1">
+          <img
+            src="assets/about-kitchen.jpg"
+            alt="Modern kitchen with under-cabinet LED strip lighting by SDME Engineering"
+            class="w-full h-60 object-cover"
+            loading="lazy"
+          />
+        </div>
+
+        <div class="gallery-item reveal reveal-delay-2">
+          <img
+            src="assets/gallery-display.jpg"
+            alt="Bespoke display cabinet with track and LED accent lighting by SDME Engineering"
+            class="w-full h-60 object-cover"
+            loading="lazy"
+          />
+        </div>
+
+      </div>
+
+      <div class="text-center mt-12 reveal">
+        <a href="#contact" class="btn-gold"><span>Discuss Your Project</span></a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       TESTIMONIALS
+  ════════════════════════════════════ -->
+  <section id="testimonials" class="hidden py-28 px-6 bg-ink-soft border-y border-gold/10">
+    <div class="max-w-6xl mx-auto">
+
+      <div class="text-center mb-16 reveal">
+        <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-4">Client Words</p>
+        <h2 class="font-display text-cream font-medium" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">
+          What Our Clients Say
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mt-14">
+
+        <div class="border border-gold/10 p-8 hover:border-gold/25 transition-colors reveal">
+          <div class="flex gap-1 mb-6">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+          </div>
+          <blockquote class="font-body text-cream-muted text-sm font-light leading-loose mb-8">
+            "SDME transformed our penthouse. The lighting scenes they designed are extraordinary — the living room shifts from sharp morning clarity to a warm amber dusk, entirely automatically. The joinery is seamless. It's like the walls grew the storage."
+          </blockquote>
+          <div>
+            <p class="font-display text-cream text-xs mb-0.5">Dato' Rashid K.</p>
+            <p class="font-body text-cream-dim text-[0.65rem] uppercase tracking-widest">Sentosa Cove Penthouse</p>
+          </div>
+        </div>
+
+        <div class="border border-gold/10 p-8 hover:border-gold/25 transition-colors reveal reveal-delay-2">
+          <div class="flex gap-1 mb-6">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+          </div>
+          <blockquote class="font-body text-cream-muted text-sm font-light leading-loose mb-8">
+            "We engaged SDME to fit out our showroom and the result exceeded every brief. The ambient lighting programme they built changes character hour by hour. Multiple clients have specifically commented on the atmosphere. Worth every dollar."
+          </blockquote>
+          <div>
+            <p class="font-display text-cream text-xs mb-0.5">Stephanie Lim</p>
+            <p class="font-body text-cream-dim text-[0.65rem] uppercase tracking-widest">Creative Director, Tanjong Pagar</p>
+          </div>
+        </div>
+
+        <div class="border border-gold/10 p-8 hover:border-gold/25 transition-colors reveal reveal-delay-3">
+          <div class="flex gap-1 mb-6">
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+            <i data-lucide="star" class="w-3.5 h-3.5 text-gold fill-gold"></i>
+          </div>
+          <blockquote class="font-body text-cream-muted text-sm font-light leading-loose mb-8">
+            "The master bedroom wardrobe they designed is the finest piece of furniture I own. No handles, no visible hinges — just beautiful timber that opens with a touch. The integrated lighting inside is a complete luxury. SDME is in a class of their own."
+          </blockquote>
+          <div>
+            <p class="font-display text-cream text-xs mb-0.5">Dr. Amira H.</p>
+            <p class="font-body text-cream-dim text-[0.65rem] uppercase tracking-widest">Holland Village, Singapore</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       CONTACT FORM
+  ════════════════════════════════════ -->
+  <section id="contact" class="py-28 px-6 relative">
+    <div class="absolute inset-0 z-0 opacity-8">
+      <img
+        src="assets/hero2.jpg"
+        alt=""
+        aria-hidden="true"
+        class="w-full h-full object-cover opacity-10"
+      />
+    </div>
+
+    <div class="relative z-10 max-w-6xl mx-auto grid md:grid-cols-2 gap-16 lg:gap-24 items-start">
+
+      <!-- Left -->
+      <div class="reveal">
+        <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-4">Begin Your Project</p>
+        <h2 class="font-display text-cream font-medium mb-6" style="font-size: clamp(1.8rem, 3.5vw, 2.8rem);">
+          Let's Build<br />Something Considered.
+        </h2>
+        <p class="font-body text-cream-muted font-light text-sm leading-loose mb-10">
+          Every SDME project starts with a conversation. Tell us about your space, your vision, and your timeline — we'll come back with an approach tailored specifically to you.
+        </p>
+
+        <div class="space-y-6">
+          <div class="flex items-center gap-4">
+            <div class="w-8 h-8 border border-gold/30 flex items-center justify-center shrink-0">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-gold"></i>
+            </div>
+            <div>
+              <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest mb-0.5">Phone / WhatsApp</p>
+              <a href="tel:+6580447400" class="font-body text-cream text-sm hover:text-gold transition-colors">+65 8044 7400</a>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="w-8 h-8 border border-gold/30 flex items-center justify-center shrink-0">
+              <i data-lucide="mail" class="w-3.5 h-3.5 text-gold"></i>
+            </div>
+            <div>
+              <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest mb-0.5">Email</p>
+              <a href="mailto:sales.sdmeeng@gmail.com" class="font-body text-cream text-sm hover:text-gold transition-colors">sales.sdmeeng@gmail.com</a>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="w-8 h-8 border border-gold/30 flex items-center justify-center shrink-0">
+              <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gold"></i>
+            </div>
+            <div>
+              <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest mb-0.5">Studio</p>
+              <p class="font-body text-cream text-sm">50 East Coast Road, Roxy Square, #01-77, Singapore 428769</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social -->
+        <div class="flex items-center gap-4 mt-10">
+          <a href="#" aria-label="Instagram" class="w-9 h-9 border border-gold/20 flex items-center justify-center hover:border-gold/60 transition-colors cursor-pointer">
+            <i data-lucide="instagram" class="w-4 h-4 text-cream-muted hover:text-gold transition-colors"></i>
+          </a>
+          <a href="#" aria-label="Facebook" class="w-9 h-9 border border-gold/20 flex items-center justify-center hover:border-gold/60 transition-colors cursor-pointer">
+            <i data-lucide="facebook" class="w-4 h-4 text-cream-muted hover:text-gold transition-colors"></i>
+          </a>
+          <a href="#" aria-label="LinkedIn" class="w-9 h-9 border border-gold/20 flex items-center justify-center hover:border-gold/60 transition-colors cursor-pointer">
+            <i data-lucide="linkedin" class="w-4 h-4 text-cream-muted hover:text-gold transition-colors"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div class="reveal reveal-delay-2">
+        <form
+          id="contact-form"
+          action="https://formspree.io/f/xpqgrlzk"
+          method="POST"
+          class="space-y-4"
+          novalidate
+        >
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="name" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest block mb-2">Full Name *</label>
+              <input type="text" id="name" name="name" required placeholder="Your full name" class="form-input" autocomplete="name" />
+            </div>
+            <div>
+              <label for="phone" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest block mb-2">Phone / WhatsApp *</label>
+              <input type="tel" id="phone" name="phone" required placeholder="+65 XXXX XXXX" class="form-input" autocomplete="tel" />
+            </div>
+          </div>
+
+          <div>
+            <label for="email" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest block mb-2">Email Address *</label>
+            <input type="email" id="email" name="email" required placeholder="hello@youremail.com" class="form-input" autocomplete="email" />
+          </div>
+
+          <div>
+            <label for="service" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest block mb-2">Service of Interest</label>
+            <select id="service" name="service" class="form-input cursor-pointer">
+              <option value="">Select a service…</option>
+              <option value="lighting">Smart Ambient Lighting Control</option>
+              <option value="carpentry">Intelligent Carpentry</option>
+              <option value="both">Both — Lighting &amp; Carpentry</option>
+              <option value="consultation">Initial Consultation Only</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="budget" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest block mb-2">Approximate Budget</label>
+            <select id="budget" name="budget" class="form-input cursor-pointer">
+              <option value="">Select a range…</option>
+              <option value="under-5k">Under SGD 5,000</option>
+              <option value="5k-20k">SGD 5,000 – 20,000</option>
+              <option value="20k-50k">SGD 20,000 – 50,000</option>
+              <option value="50k+">SGD 50,000+</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest block mb-2">Tell Us About Your Project</label>
+            <textarea id="message" name="message" rows="4" placeholder="Describe the space, what you're envisioning, and any relevant details…" class="form-input resize-none"></textarea>
+          </div>
+
+          <!-- Error / success messages -->
+          <div id="form-error" class="hidden font-body text-red-400 text-xs tracking-wide border border-red-400/20 px-4 py-3" role="alert"></div>
+          <div id="form-success" class="hidden font-body text-green-400 text-xs tracking-wide border border-green-400/20 px-4 py-3" role="status">
+            Thank you — we'll be in touch within one business day.
+          </div>
+
+          <button type="submit" class="btn-gold w-full text-center" id="submit-btn">
+            <span>Send Enquiry</span>
+          </button>
+
+          <p class="font-body text-cream-dim text-[0.6rem] text-center tracking-wide">
+            We respond within one business day. All enquiries are confidential.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════════════════════════════════════
+       FOOTER
+  ════════════════════════════════════ -->
+  <footer class="bg-ink border-t border-gold/10 py-14 px-6">
+    <div class="max-w-7xl mx-auto">
+
+      <div class="grid md:grid-cols-4 gap-10 mb-12">
+        <!-- Brand -->
+        <div class="md:col-span-2">
+          <div class="mb-4">
+            <span class="font-display text-cream text-xl tracking-widest2 block">SDME</span>
+            <span class="font-body text-cream-dim text-[0.6rem] tracking-widest3 uppercase">Engineering</span>
+          </div>
+          <p class="font-body text-cream-dim text-xs font-light leading-loose max-w-xs">
+            Smart ambient lighting control and bespoke architectural carpentry — based in Singapore, serving residential and commercial clients across the region.
+          </p>
+        </div>
+
+        <!-- Links -->
+        <div>
+          <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest mb-5">Navigate</p>
+          <ul class="space-y-3">
+            <li><a href="#services" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">Services</a></li>
+            <li><a href="#about" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">Studio</a></li>
+            <li><a href="#gallery" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">Portfolio</a></li>
+            <li><a href="#contact" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">Enquire</a></li>
+            <li><a href="#contact" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest mb-5">Contact</p>
+          <ul class="space-y-3">
+            <li>
+              <a href="tel:+6580447400" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">+65 8044 7400</a>
+            </li>
+            <li>
+              <a href="mailto:hello@sdmeengineering.com" class="font-body text-cream-muted text-xs hover:text-gold transition-colors">hello@sdmeengineering.com</a>
+            </li>
+            <li>
+              <p class="font-body text-cream-muted text-xs">50 East Coast Rd, Roxy Square, #01-77, S'pore 428769</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <span class="gold-line block mb-8"></span>
+
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest">
+          &copy; 2026 SDME Engineering Sdn Bhd. All rights reserved.
+        </p>
+        <div class="flex items-center gap-5">
+          <a href="#" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest hover:text-gold transition-colors">Privacy</a>
+          <a href="#" class="font-body text-cream-dim text-[0.6rem] uppercase tracking-widest hover:text-gold transition-colors">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ════════════════════════════════════
+       SCRIPTS
+  ════════════════════════════════════ -->
+  <script>
+    // Init Lucide icons
+    lucide.createIcons();
+
+    // ── Count-up animation for stat numbers ──
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function countUp(el) {
+      const target = parseInt(el.dataset.count, 10);
+      const suffix = el.dataset.suffix || '';
+      if (prefersReduced) { el.textContent = target + suffix; return; }
+      const duration = 1400;
+      const start = performance.now();
+      function tick(now) {
+        const p = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+        el.textContent = Math.round(eased * target) + suffix;
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // ── Scroll-reveal observer ──
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const stat = entry.target.querySelector('[data-count]');
+          if (stat && !stat.dataset.done) { stat.dataset.done = '1'; countUp(stat); }
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── Sticky nav shadow on scroll ──
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 60) {
+        navbar.style.boxShadow = '0 8px 48px rgba(0,0,0,0.5)';
+      } else {
+        navbar.style.boxShadow = '';
+      }
+    }, { passive: true });
+
+    // ── Mobile hamburger ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobile-menu');
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+      hamburger.innerHTML = isOpen
+        ? '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+        : '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>';
+    });
+    // Close on link click
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    // ── Active nav link highlight ──
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const activateLink = () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+      });
+      navLinks.forEach(link => {
+        link.style.color = link.getAttribute('href') === '#' + current ? '#C9A96E' : '';
+      });
+    };
+    window.addEventListener('scroll', activateLink, { passive: true });
+
+    // ── Client-side form validation ──
+    const form = document.getElementById('contact-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const formError = document.getElementById('form-error');
+    const formSuccess = document.getElementById('form-success');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      formError.classList.add('hidden');
+      formSuccess.classList.add('hidden');
+
+      const name = form.name.value.trim();
+      const phone = form.phone.value.trim();
+      const email = form.email.value.trim();
+
+      if (!name) {
+        formError.textContent = 'Please enter your full name.';
+        formError.classList.remove('hidden');
+        form.name.focus();
+        return;
+      }
+      if (!phone) {
+        formError.textContent = 'Please enter your phone number.';
+        formError.classList.remove('hidden');
+        form.phone.focus();
+        return;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        formError.textContent = 'Please enter a valid email address.';
+        formError.classList.remove('hidden');
+        form.email.focus();
+        return;
+      }
+
+      // Simulated submission (replace action URL with Formspree or backend)
+      submitBtn.innerHTML = '<span>Sending…</span>';
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.6';
+      submitBtn.style.cursor = 'not-allowed';
+
+      setTimeout(() => {
+        formSuccess.classList.remove('hidden');
+        form.reset();
+        submitBtn.innerHTML = '<span>Send Enquiry</span>';
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '';
+        submitBtn.style.cursor = '';
+      }, 1500);
+    });
+  </script>
+</body>
+</html>
