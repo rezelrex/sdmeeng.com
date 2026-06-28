@@ -76,7 +76,7 @@
     html { background: #0A0A0A; }
 
     /* Offset anchored sections so their headings clear the fixed nav */
-    section[id] { scroll-margin-top: 7rem; }
+    section[id] { scroll-margin-top: 8rem; }
 
     body {
       font-family: 'Josefin Sans', sans-serif;
@@ -259,11 +259,11 @@
        NAVIGATION
   ════════════════════════════════════ -->
   <nav id="navbar" class="glass-nav fixed top-0 left-0 right-0 z-50 transition-all duration-500">
-    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-20 md:h-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-24 md:h-28">
 
       <!-- Logo -->
       <a href="#" class="flex items-center group" aria-label="SDME Engineering home">
-        <img src="assets/SDME.png" alt="SDME Engineering" class="h-14 md:h-16 w-auto invert opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+        <img src="assets/SDME.png" alt="SDME Engineering" class="h-20 md:h-24 w-auto invert opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
       </a>
 
       <!-- Desktop links -->
@@ -320,10 +320,11 @@
       <h1 class="font-display text-cream font-semibold leading-tight mb-8 reveal reveal-delay-1"
           style="font-size: clamp(2.4rem, 6.5vw, 6rem); letter-spacing: -0.01em;">
         Transform Your Home Into<br />
-        <span class="text-gold">Modern Style Living.</span>
+        <span class="text-gold">Modern Style Living</span><br />
+        <span class="font-display italic font-normal text-cream-muted" style="font-size: clamp(1.6rem, 4.2vw, 3.8rem);">— with us.</span>
       </h1>
 
-      <p class="font-body text-cream-muted font-light leading-relaxed max-w-2xl mx-auto mb-12 reveal reveal-delay-2"
+      <p class="font-body text-cream-muted font-light leading-relaxed max-w-2xl mx-auto mb-10 reveal reveal-delay-2"
          style="font-size: clamp(0.9rem, 1.8vw, 1.1rem);">
         With a smart lighting system and bespoke architectural carpentry — every room becomes multi-functional, optimised, and convenient at your fingertip.
       </p>
@@ -571,6 +572,51 @@
   <!-- ════════════════════════════════════
        GALLERY
   ════════════════════════════════════ -->
+  <!-- ════════════════════════════════════
+       VIDEO SHOWCASE
+  ════════════════════════════════════ -->
+  <section id="showcase" class="relative overflow-hidden" style="height: clamp(420px, 80vh, 900px);">
+
+    <!-- Video -->
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      class="absolute inset-0 w-full h-full object-cover"
+      aria-hidden="true"
+    >
+      <source src="assets/scene-reel.mov" type="video/mp4" />
+    </video>
+
+    <!-- Dark gradient overlays — top and bottom fade into page bg -->
+    <div class="absolute inset-0 bg-gradient-to-b from-ink via-transparent to-ink" style="opacity:0.55;"></div>
+    <!-- Far-right text overlay gradient — narrow so the centre of the video stays unblocked -->
+    <div class="absolute inset-0" style="background: linear-gradient(270deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.7) 18%, rgba(10,10,10,0.2) 32%, transparent 42%);"></div>
+
+    <!-- Content — anchored to the far right -->
+    <div class="absolute inset-0 flex items-center justify-end z-10 px-6 lg:pr-12 lg:pl-6">
+      <div class="max-w-xs lg:max-w-sm reveal">
+        <p class="font-body text-gold text-[0.65rem] tracking-widest3 uppercase mb-5">In Action</p>
+        <h2 class="font-display text-cream font-medium leading-tight mb-6"
+            style="font-size: clamp(2rem, 4.5vw, 3.2rem);">
+          One Tap.<br />Every Mood.
+        </h2>
+        <p class="font-body text-cream-muted font-light text-sm leading-loose mb-8 max-w-sm">
+          Watch how a single centralised scene change transforms the entire character of a space — from bright task lighting to warm, intimate ambience — instantly, at your fingertip.
+        </p>
+        <a href="#contact" class="btn-gold"><span>Engineer My Space</span></a>
+      </div>
+    </div>
+
+    <!-- Gold rule at bottom -->
+    <div class="absolute bottom-0 left-0 right-0 z-10">
+      <span class="gold-line block"></span>
+    </div>
+  </section>
+
+
   <section id="gallery" class="py-28 px-6">
     <div class="max-w-7xl mx-auto">
 
